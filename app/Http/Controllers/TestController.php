@@ -23,16 +23,25 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        // Basic logic: Validate the request data
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'body' => 'required',
+        $month = $_POST['month']; //
+        $entity = $request->entity;
+        $amount = $request->amount;
+
+        if($month == "") { //
+            echo "Month required"; //
+        }
+
+
+        DB::select("INSERT INTO payroll_runs (payroll_month, legal_entity_code) VALUES ('$month', '$entity')");
+
+
+        DB::table('payroll_component_summaries')->insert([
+            'component_name' => 'Basic',
+            'gl_code' => '1001',
+            'entry_type' => 'debit',
+            'amount' => $amount
         ]);
 
-        // Basic logic: Create a new post record using the Model
-        $post = Post::create($validated);
-
-        // Redirect the user after successful creation
-        return redirect()->route('posts.index')->with('success', 'Post created successfully!');
+        return "Done"; 
     }
 }
